@@ -45,6 +45,9 @@ public class Main extends JavaPlugin implements Listener{
 					p.sendMessage("§b§lDiamenty: 4%");
 					p.sendMessage("§a§lEmeraldy: 3%");
 					p.sendMessage("§0§lWegiel: 5%");
+					p.sendMessage("§7§lZloto: 3%");
+					p.sendMessage("§4§lJablka: 4%");
+					p.sendMessage("§2Ksiazki: 6%");
 				}
 			} else {
 				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
