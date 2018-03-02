@@ -15,46 +15,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.chmurqafx.plugindonauki.builder.ItemBuilder;
+import pl.chmurqafx.plugindonauki.listener.BlockBreakListener;
 
 public class Main extends JavaPlugin implements Listener{
 	
 	@Override
 	public void onEnable() {
 		System.out.println("Uruchamianie pluginu");
-		Bukkit.getPluginManager().registerEvents(new Main(), this);
+		PluginManager pm = Bukkit.getPluginManager();
+		pm.registerEvents(new BlockBreakListener(), this);
 	}
 	
 	@Override
 	public void onDisable() {
 		System.out.println("Serwer bedzie wylaczony, dezaktywowanie pluginu.");
-	}
-	
-	@EventHandler
-	public void onBreak(BlockBreakEvent drop) {
-		Player p = drop.getPlayer();
-		Block b = drop.getBlock();
-		if(drop.isCancelled()) {
-			return;
-		}
-		if(b.getType() == Material.STONE) {
-			if(Math.random() * 100 <= 5) {
-				ItemStack item1 = new ItemBuilder(Material.DIAMOND).toItemStack();
-				b.getWorld().dropItemNaturally(b.getLocation(), item1);
-				p.sendMessage("§b§lWydropiles diamenta.");
-			}
-			if(Math.random() * 100 <= 6) {
-				ItemStack item1 = new ItemBuilder(Material.EMERALD).toItemStack();
-				b.getWorld().dropItemNaturally(b.getLocation(), item1);
-				p.sendMessage("§a§lWydropiles emeralda.");
-			}
-			if(Math.random() * 100 <= 10) {
-				ItemStack item1 = new ItemBuilder(Material.COAL).toItemStack();
-				b.getWorld().dropItemNaturally(b.getLocation(), item1);
-				p.sendMessage("§0§lWydropiles wegiel.");
-			}
-		}
 	}
 
 	@Override
@@ -65,9 +42,9 @@ public class Main extends JavaPlugin implements Listener{
 					Player p = (Player) sender;
 					System.out.println("Someone executed /drop command.");
 					p.sendMessage("§7§lDrop:");
-					p.sendMessage("§b§lDiamenty: 5%");
-					p.sendMessage("§a§lEmeraldy: 6%");
-					p.sendMessage("§0§lWegiel: 10%");
+					p.sendMessage("§b§lDiamenty: 4%");
+					p.sendMessage("§a§lEmeraldy: 3%");
+					p.sendMessage("§0§lWegiel: 5%");
 				}
 			} else {
 				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
