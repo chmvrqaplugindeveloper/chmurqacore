@@ -1,312 +1,175 @@
 package pl.chmurqafx.plugindonauki;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+
 
 import org.bukkit.Bukkit;
-import org.bukkit.Difficulty;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.chmurqafx.plugindonauki.builder.ItemBuilder;
+import pl.chmurqafx.plugindonauki.commands.DropCommand;
+import pl.chmurqafx.plugindonauki.commands.EasyCommand;
+import pl.chmurqafx.plugindonauki.commands.FeedCommand;
+import pl.chmurqafx.plugindonauki.commands.HealCommand;
+import pl.chmurqafx.plugindonauki.commands.MSGCommand;
+import pl.chmurqafx.plugindonauki.commands.MobSpawnCommand;
+import pl.chmurqafx.plugindonauki.commands.OnlinePlayerCommand;
+import pl.chmurqafx.plugindonauki.commands.TimeCommand;
+import pl.chmurqafx.plugindonauki.commands.TpCommand;
+import pl.chmurqafx.plugindonauki.commands.WeatherCommand;
 import pl.chmurqafx.plugindonauki.listener.BlockBreakListener;
 
-public class Main extends JavaPlugin implements Listener{
+public class Main extends JavaPlugin {
 	
+	
+	private List<String> msgs = new ArrayList<String>();{
+		double jeden = getConfig().getDouble("autoMessage1");
+		double dwa =  getConfig().getDouble("autoMessage2");
+		double trzy =  getConfig().getDouble("autoMessage3");
+		double cztery =  getConfig().getDouble("autoMessage4");
+		double piec =  getConfig().getDouble("autoMessage5");
+		msgs.add("§8[Info] " + jeden);
+		msgs.add("§8[Info] " + dwa);
+		msgs.add("§8[Info] " + trzy);
+		msgs.add("§8[Info] " + cztery);
+		msgs.add("§8[Info] " + piec);
+	}
+	private int msgNum;
 	@Override
 	public void onEnable() {
 		System.out.println("Uruchamianie pluginu");
+		getCommand("drop").setExecutor(new DropCommand());
+		getCommand("onlineplayers").setExecutor(new OnlinePlayerCommand());
+		getCommand("uleczenie").setExecutor(new HealCommand());
+		getCommand("pogoda").setExecutor(new WeatherCommand());
+		getCommand("czas").setExecutor(new TimeCommand());
+		getCommand("easymode").setExecutor(new EasyCommand());
+		getCommand("teleport").setExecutor(new TpCommand());
+		getCommand("nakarm").setExecutor(new FeedCommand());
+		getCommand("message").setExecutor(new MSGCommand());
+		getCommand("zresp").setExecutor(new MobSpawnCommand());
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new BlockBreakListener(), this);
+		autoMSG1(msgs);
+		autoMSG2(msgs);
+		autoMSG3(msgs);
+		autoMSG4(msgs);
+		autoMSG5(msgs);
+		saveDefaultConfig();
 	}
 	
 	@Override
 	public void onDisable() {
 		System.out.println("Serwer bedzie wylaczony, dezaktywowanie pluginu.");
 	}
+	
+	private void autoMSG1(final List<String> msg) {
+		msgNum = 0;
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run() {
+				Bukkit.broadcastMessage(msg.get(0));
+				msgNum++;
+				if(msgNum == 6) {
+					msgNum = 0;
+				}
+			}
+		}, 0, 15*20);
+	}
+	
+	private void autoMSG2(final List<String> msg) {
+		msgNum = 0;
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run() {
+				Bukkit.broadcastMessage(msg.get(1));
+				msgNum++;
+				if(msgNum == 6) {
+					msgNum = 0;
+				}
+			}
+		}, 0, 25*20);
+	}
 
+	private void autoMSG3(final List<String> msg) {
+		msgNum = 0;
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run() {
+				Bukkit.broadcastMessage(msg.get(2));
+				msgNum++;
+				if(msgNum == 6) {
+					msgNum = 0;
+				}
+			}
+		}, 0, 35*20);
+	}
+	
+	private void autoMSG4(final List<String> msg) {
+		msgNum = 0;
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run() {
+				Bukkit.broadcastMessage(msg.get(3));
+				msgNum++;
+				if(msgNum == 6) {
+					msgNum = 0;
+				}
+			}
+		}, 0, 45*20);
+	}
+	
+	private void autoMSG5(final List<String> msg) {
+		msgNum = 0;
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run() {
+				Bukkit.broadcastMessage(msg.get(4));
+				msgNum++;
+				if(msgNum == 6) {
+					msgNum = 0;
+				}
+			}
+		}, 0, 55*20);
+	}
+	
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(cmd.getName().equalsIgnoreCase("drop")) {
-			if(sender.hasPermission("chmurqacore.drophelp")) {
-				if(sender instanceof Player) {
-					Player p = (Player) sender;
-					System.out.println("Someone executed /drop command.");
-					p.sendMessage("§7§lDrop:");
-					p.sendMessage("§b§lDiamenty: 4%");
-					p.sendMessage("§a§lEmeraldy: 3%");
-					p.sendMessage("§0§lWegiel: 5%");
-					p.sendMessage("§7§lZloto: 3%");
-					p.sendMessage("§4§lJablka: 4%");
-					p.sendMessage("§2Ksiazki: 6%");
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
+		if(cmd.getName().equalsIgnoreCase("spawn")) {
+			if(args.length != 1) {
+				return true;
 			}
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("onlineplayers")) {
-			if(sender.hasPermission("chmurqacore.onlineplayers")) {
-				Collection<? extends Player> list = (Bukkit.getOnlinePlayers());
-				for (Player p : list) {
-				  sender.sendMessage(p.getName());	 
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
+			if (!(sender instanceof Player)) {
+				return true;
 			}
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("uleczenie")) {
-			if(sender.hasPermission("chmurqacore.heal")) {
-				if(args.length == 0) {
-					if(!(sender instanceof Player)) {
-						sender.sendMessage("§cNie jestes graczem.");
-						return false;
-					}
-					Player p = (Player) sender;
-					p.setHealth(20);
-					p.setFoodLevel(20);
-					p.setFireTicks(0);
-				}
-				
-				if(args.length >= 1) {
-					String nazwaGracza = args[0];
-					if(Bukkit.getPlayer(nazwaGracza) !=null) {
-						Player p = Bukkit.getPlayer(nazwaGracza);
-						p.setHealth(20);
-						p.setFoodLevel(20);
-						p.setFireTicks(0);
-					} else {
-						sender.sendMessage("§c§lNie ma takiego gracza na serwerze.");
-					}
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
+			Player p = (Player) sender;
+			if(args[0].equalsIgnoreCase("set")) {
+				Location l = p.getLocation();
+				getConfig().set("spawnLokalizacjaX", l.getX());
+				getConfig().set("spawnLokalizacjaY", l.getY());
+				getConfig().set("spawnLokalizacjaZ", l.getZ());
+				getConfig().set("spawnLokalizacjaWorld", l.getWorld().getName());
+				saveConfig();
+				return true;
 			}
-			
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("pogoda")) {
-			if(sender.hasPermission("chmurqacore.weather")) {
-				if(args.length == 1) {
-					if(sender instanceof Player) {
-						World w = ((Player)sender).getWorld();
-						if(args[0].equals("ladna")) {
-							w.setStorm(false);
-							w.setThundering(false);
-							return true;
-						}
-						if(args[0].equals("brzydka")) {
-							w.setStorm(true);
-							w.setThundering(false);
-							return true;
-						}
-						if(args[0].equals("burza")) {
-							w.setStorm(true);
-							w.setThundering(true);
-							return true;
-						}
-						if(args[0].equalsIgnoreCase("pioruny")) {
-							w.setStorm(false);
-							w.setThundering(true);
-							return true;
-						} else {
-							sender.sendMessage("§cMozliwe argumenty: ladna, brzydka, burza, pioruny");
-						}
-					}
-				}
-				
-				if(args.length == 2) {
-					String nazwa = args[1];
-					if(Bukkit.getWorld(nazwa) !=null) {
-						World w = Bukkit.getWorld(nazwa);
-						if(args[0].equalsIgnoreCase("ladna")) {
-							w.setStorm(false);
-							w.setThundering(false);
-							return true;
-						}
-						if(args[0].equalsIgnoreCase("brzydka")) {
-							w.setStorm(true);
-							w.setThundering(false);
-							return true;
-						}
-						if(args[0].equalsIgnoreCase("burza")) {
-							w.setStorm(true);
-							w.setThundering(true);
-							return true;
-						}
-						if(args[0].equalsIgnoreCase("pioruny")) {
-							w.setStorm(false);
-							w.setThundering(true);
-							return true;
-						} else {
-							sender.sendMessage("§cMozliwe argumenty: ladna, brzydka, burza, pioruny");
-						}
-					} else {
-						sender.sendMessage("§cSwiat o nazwie " + nazwa +" nie istnieje!");
-					}
-				} else {
-					sender.sendMessage("§cZla liczba argumentow!");
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
-			}
-			
-		}
-		if(cmd.getName().equalsIgnoreCase("czas")) {
-			if(sender.hasPermission("chmurqacore.czas")) {
-				if(args.length == 2) {
-					String nazwa = args[1];
-					if(Bukkit.getWorld(nazwa) !=null) {
-						World w = Bukkit.getWorld(nazwa);
-						Long l = Long.parseLong(args[0]);
-						w.setTime(l);
-					} else {
-						sender.sendMessage("§cSwiat o nazwie " + nazwa +" nie istnieje!");
-					}
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
-			}
-		}
-		if(cmd.getName().equalsIgnoreCase("easymode")) {
-			if(sender.hasPermission("chmurqacore.easymode")) {
-				if(args.length !=1) {
-					return false;
-				}
-				String nazwa = args[0];
-				if(Bukkit.getWorld(nazwa) !=null) {
-					World w = (Bukkit.getWorld(nazwa));
-					w.setPVP(!w.getPVP());
-					w.setDifficulty(Difficulty.EASY);
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
-			}
-		}
-		if(cmd.getName().equalsIgnoreCase("tp")) {
-			if(sender.hasPermission("chmurqacore.tp")) {
-				if(args.length == 1) {
-					if (!(sender instanceof Player)) {
-						sender.sendMessage("§cNie ma Cie na serwerze.");
-						return false;
-					}
-					if(!(Bukkit.getPlayer(args[0]) !=null)) {
-						sender.sendMessage("§cNie ma takiego gracza na serwerze.");
-						return false;
-					}
-					Player dokogotp = Bukkit.getPlayer(args[0]);
-					Location lokalizacja = dokogotp.getLocation();
-					((Player)sender).teleport(lokalizacja);
-					return true;
-				}
-				if(args.length == 2) {
-					if(!(Bukkit.getPlayer(args[0]) !=null)) {
-						sender.sendMessage("§cNie ma takiego gracza na serwerze. (args 0)");
-						return false;
-					}
-					if(!(Bukkit.getPlayer(args[0]) !=null)) {
-						sender.sendMessage("§cNie ma takiego gracza na serwerze. (args 1)");
-						return false;
-					}
-					Player p = Bukkit.getPlayer(args[0]);
-					Player dokogotp = Bukkit.getPlayer(args[1]);
-					Location lokalizacja = new Location(dokogotp.getLocation().getWorld(), dokogotp.getLocation().getX(), dokogotp.getLocation().getY(), dokogotp.getLocation().getZ());
-					p.teleport(lokalizacja);
+			if(args[0].equalsIgnoreCase("tp")) {
+				double x = getConfig().getDouble("spawnLokalizacjaX");
+				double y =  getConfig().getDouble("spawnLokalizacjaY");
+				double z =  getConfig().getDouble("spawnLokalizacjaZ");
+				String worldname =  getConfig().getString("spawnLokalizacjaWorld");
+				if(p.hasPermission("chmurqacore.*")) {
+					Location l = new Location(Bukkit.getWorld(worldname),x,y,z);
+					p.sendMessage("X:" + x);
+					p.sendMessage("Y:" + y);
+					p.sendMessage("Z:" + z);
+					p.sendMessage("World:" + worldname);
+					p.teleport(l);
 					return true;
 				} else {
-					sender.sendMessage("§cZa malo argumentow!");
-					return false;
+					Location l = new Location(Bukkit.getWorld(worldname),x,y,z);
+					p.teleport(l);
 				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do tej komendy.");
 			}
-		}
-
-		if(cmd.getName().equalsIgnoreCase("podpal")) {
-			if(sender.hasPermission("chmurqacore.heal")) {
-				if(args.length == 0) {
-					if(!(sender instanceof Player)) {
-						sender.sendMessage("§cNie jestes graczem.");
-						return false;
-					}
-					Player p = (Player) sender;
-					p.setFireTicks(1);
-				}
-				
-				if(args.length >= 1) {
-					String nazwaGracza = args[0];
-					if(Bukkit.getPlayer(nazwaGracza) !=null) {
-						Player p = Bukkit.getPlayer(nazwaGracza);
-						p.setFireTicks(1);
-					} else {
-						sender.sendMessage("§c§lNie ma takiego gracza na serwerze.");
-					}
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
-			}
-			
-		}
-
-		if(cmd.getName().equalsIgnoreCase("nakarm")) {
-			if(sender.hasPermission("chmurqacore.heal")) {
-				if(args.length == 0) {
-					if(!(sender instanceof Player)) {
-						sender.sendMessage("§cNie jestes graczem.");
-						return false;
-					}
-					Player p = (Player) sender;
-					p.setFoodLevel(20);
-				}
-				
-				if(args.length >= 1) {
-					String nazwaGracza = args[0];
-					if(Bukkit.getPlayer(nazwaGracza) !=null) {
-						Player p = Bukkit.getPlayer(nazwaGracza);
-						p.setFoodLevel(20);
-					} else {
-						sender.sendMessage("§c§lNie ma takiego gracza na serwerze.");
-					}
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
-			}
-			
-		}
-		if(cmd.getName().equalsIgnoreCase("zgas")) {
-			if(sender.hasPermission("chmurqacore.heal")) {
-				if(args.length == 0) {
-					if(!(sender instanceof Player)) {
-						sender.sendMessage("§cNie jestes graczem.");
-						return false;
-					}
-					Player p = (Player) sender;
-					p.setFireTicks(0);
-				}
-				
-				if(args.length >= 1) {
-					String nazwaGracza = args[0];
-					if(Bukkit.getPlayer(nazwaGracza) !=null) {
-						Player p = Bukkit.getPlayer(nazwaGracza);
-						p.setFireTicks(0);
-					} else {
-						sender.sendMessage("§c§lNie ma takiego gracza na serwerze.");
-					}
-				}
-			} else {
-				sender.sendMessage("§cNie posiadasz permisji do uzycia tej komendy.");
-			}
-			
 		}
 		return false;
 	}
