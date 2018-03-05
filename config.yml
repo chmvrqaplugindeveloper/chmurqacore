@@ -1,0 +1,10 @@
+#Lokalizacja spawna na swiecie
+spawnLokalizacjaX: 0
+spawnLokalizacjaY: 100
+spawnLokalizacjaZ: 0 
+spawnLokalizacjaWorld: 'world'
+autoMessage1: '§41'
+autoMessage2: '§42'
+autoMessage3: '§43'
+autoMessage4: '§44'
+autoMessage5: '§45'
